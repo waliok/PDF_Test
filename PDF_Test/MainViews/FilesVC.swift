@@ -90,10 +90,11 @@ class FilesVC: UIViewController {
         collectionView.allowsSelection = true
         
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 36)
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.text = "My Files"
-        navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: label)
-        
+//        navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: label)
+        navigationItem.titleView = label
+        navigationItem.titleView?.frame = CGRect(x: 0, y: 0, width: 1000, height: 0)
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(moreButton)),
             UIBarButtonItem(image: UIImage(systemName: "bell"), style: .plain, target: self, action: #selector(notificationsButton))
@@ -108,7 +109,7 @@ class FilesVC: UIViewController {
         
         floatingButton.snp.makeConstraints { make in
             make.bottom.equalTo(view.snp.bottom).offset(-100)
-            make.leading.equalTo(view.snp.trailing).offset(-70)
+            make.leading.equalTo(view.snp.trailing).offset(-80)
         }
     }
 }
@@ -345,11 +346,11 @@ extension FilesVC: UICollectionViewDelegate {
   }
 }
 
-extension FilesVC: UISearchResultsUpdating {
-  func updateSearchResults(for searchController: UISearchController) {
+//extension FilesVC: UISearchResultsUpdating {
+//  func updateSearchResults(for searchController: UISearchController) {
 //    sections = filteredSections(for: searchController.searchBar.text)
 //    applySnapshot()
-  }
+//  }
   
 //  func filteredSections(for queryOrNil: String?) -> [Section] {
 //    let sections = Section.allSections
@@ -372,16 +373,47 @@ extension FilesVC: UISearchResultsUpdating {
 //    }
 //  }
   
-  func configureSearchController() {
-    searchController.searchResultsUpdater = self
-    searchController.obscuresBackgroundDuringPresentation = false
-    searchController.searchBar.placeholder = "Search"
-    navigationItem.searchController = searchController
-    definesPresentationContext = true
-  }
-}
 
-extension FilesVC: UIDocumentPickerDelegate {
+extension FilesVC: UIDocumentPickerDelegate, UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            let filteredItems = documents.filter { item in
+                // Check if the lastPathComponent contains the search text (case-insensitive)
+                let lastPathComponent = item.documentURL!.lastPathComponent.lowercased()
+                return lastPathComponent.contains(searchText.lowercased())
+            }
+
+            // Create a new snapshot with the filtered items
+            var snapshot = NSDiffableDataSourceSnapshot<Section, PDFDocument>()
+            snapshot.appendSections([.main])
+            snapshot.appendItems(filteredItems)
+            
+            // Update the data source with the filtered snapshot
+            dataSource.apply(snapshot, animatingDifferences: true)
+        } else {
+            // Display all items if search text is empty
+            var snapshot = NSDiffableDataSourceSnapshot<Section, PDFDocument>()
+            snapshot.appendSections([.main])
+            snapshot.appendItems(documents)
+            
+            // Update the data source with the unfiltered snapshot
+            dataSource.apply(snapshot, animatingDifferences: true)
+        }
+    }
+
+    
+    
+    func configureSearchController() {
+  //    let topPadding: CGFloat = 50
+  //    searchController.searchBar.frame.origin.y += topPadding
+  //    searchController.searchBar.frame.size.height -= topPadding
+      searchController.searchResultsUpdater = self
+      searchController.obscuresBackgroundDuringPresentation = false
+      searchController.searchBar.placeholder = "Search documents"
+      navigationItem.searchController = searchController
+      definesPresentationContext = true
+        
+    }
     
     private func showDocumentPicker() {
 //        let documentPicker: UIDocumentPickerViewController
