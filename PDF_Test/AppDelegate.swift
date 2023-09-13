@@ -8,6 +8,10 @@
 import UIKit
 import Firebase
 
+extension Notification.Name {
+    static let documentDirectoryDidChange = Notification.Name("documentDirectoryDidChange")
+}
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -17,6 +21,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         // Override point for customization after application launch.
+        
+        let fileManager = FileManager.default
+        let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+        let sampleFilename = "Sample"
+        if let sampleFile = Bundle.main.url(forResource: sampleFilename, withExtension: "nil") {
+            let destination = documentDirectory.appendingPathComponent(sampleFilename)
+            if !fileManager.fileExists(atPath: destination.path) {
+                try? fileManager.copyItem(at: sampleFile, to: destination)
+            }
+        }
+        if let launchOptions = launchOptions, let url = launchOptions[.url] as? URL {
+            let destination = documentDirectory.appendingPathComponent(url.lastPathComponent)
+            if !fileManager.fileExists(atPath: destination.path) {
+                try? fileManager.copyItem(at: url, to: destination)
+                NotificationCenter.default.post(name: .documentDirectoryDidChange, object: nil)
+            }
+        }
+        return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let fileManager = FileManager.default
+        let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let destination = documentDirectory.appendingPathComponent(url.lastPathComponent)
+        if !fileManager.fileExists(atPath: destination.path) {
+            try? fileManager.copyItem(at: url, to: destination)
+            NotificationCenter.default.post(name: .documentDirectoryDidChange, object: nil)
+        }
         return true
     }
 
