@@ -13,7 +13,7 @@ import SnapKit
 class FilesVC: UIViewController {
     
     var documents = [PDFDocument]()
-
+    let modalSheet = ModalViewController()
     
     
     private var collectionView: UICollectionView! = nil
@@ -28,15 +28,16 @@ class FilesVC: UIViewController {
         var button = UIButton()
         let image = UIImage(systemName: "plus.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 60, weight: .light))
 //        button.tintColor = .white
+        button.showsTouchWhenHighlighted = true
         button.backgroundColor = .white
         button.setImage(image, for: .normal)
+        button.layer.cornerRadius = 60
+        
         button.layer.shadowRadius = 10
         button.layer.shadowOpacity = 0.5
-        button.layer.cornerRadius = 60
         button.layer.shadowOffset = CGSize(width: 5, height: 7)
         
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         
         button.addTarget(self, action: #selector(pickPDF), for: .touchUpInside)
         
@@ -46,9 +47,6 @@ class FilesVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//
-//        let url = Bundle.main.url(forResource: "Sample", withExtension: "pdf")
-//        documents.append(PDFDocument(url: url!)!)
 
         // Get the document directory URL
         if let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
@@ -102,6 +100,11 @@ class FilesVC: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(documentDirectoryDidChange(_:)), name: .documentDirectoryDidChange, object: nil)
         
+//        let glareView = UIView(frame: CGRect(x: 0, y: 0, width: floatingButton.frame.width, height: floatingButton.frame.height))
+//                glareView.backgroundColor = UIColor.white.withAlphaComponent(0.3) // Adjust alpha as needed
+//                floatingButton.addSubview(glareView)
+//
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -140,13 +143,133 @@ extension FilesVC {
         collectionView.register(DocumentCell.self, forCellWithReuseIdentifier: "cellId")
         collectionView.delegate = self
         view.addSubview(collectionView)
+        // Add white shadow (top)
+        
+//        floatingButton.layer.masksToBounds = false
+////                let whiteShadowLayer = CALayer()
+////                whiteShadowLayer.frame = floatingButton.bounds
+////                whiteShadowLayer.backgroundColor = UIColor.clear.cgColor
+////                whiteShadowLayer.shadowColor = UIColor.white.cgColor
+////                whiteShadowLayer.shadowOffset = CGSize(width: 0, height: -4) // Negative value to place it at the top
+////                whiteShadowLayer.shadowOpacity = 1
+////                whiteShadowLayer.shadowRadius = 4
+////        floatingButton.layer.insertSublayer(whiteShadowLayer, at: 1)
+//
+//                // Add black shadow (bottom)
+//                let blackShadowLayer = CALayer()
+//                blackShadowLayer.frame = floatingButton.bounds
+//                blackShadowLayer.backgroundColor = UIColor.clear.cgColor
+//                blackShadowLayer.shadowColor = UIColor.black.cgColor
+//                blackShadowLayer.shadowOffset = CGSize(width: 0, height: 10) // Positive value to place it at the bottom
+//                blackShadowLayer.shadowOpacity = 1
+//                blackShadowLayer.shadowRadius = 10
+//        floatingButton.layer.insertSublayer(blackShadowLayer, at: 1)
+            
         collectionView.addSubview(floatingButton)
      }
+    
+    func deleteCell(at indexPath: IndexPath, pdfDocument: PDFDocument) {
+            // Remove the item from the diffable data source
+            var snapshot = dataSource.snapshot()
+            snapshot.deleteItems([pdfDocument])
+//        documents.r
+            dataSource.apply(snapshot, animatingDifferences: true)
+        
+//        var snapshot = Snapshot()
+//          snapshot.appendSections([Section.main])
+//          snapshot.appendItems(self.documents)
+//          dataSource.apply(snapshot, animatingDifferences: true)
+            
+            // Delete the PDF file associated with the PDFDocument
+            if let pdfURL = pdfDocument.documentURL {
+                do {
+                    try FileManager.default.removeItem(at: pdfURL)
+                } catch {
+                    print("Error deleting file: \(error)")
+                }
+            }
+        
+        if let index = documents.firstIndex(where: { $0 === pdfDocument }) {
+                documents.remove(at: index)
+            }
+        }
+    
+    private func presentModalSheetFromCell(at indexPath: IndexPath, pdfDocument: PDFDocument) {
+           // Access the cell at the given indexPath
+           if let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell {
+               // Create and present the modal sheet
+               // Create your modal sheet content here
+//               modalSheet.modalPresentationStyle = .formSheet
+//               modalSheet.modalTransitionStyle = .coverVertical
+//               modalSheet.view.backgroundColor = .systemTeal
+//               modalSheet.pres
+               let sheet = self.modalSheet.sheetPresentationController
+               sheet?.detents = [.medium(), .large()]
+               sheet?.prefersGrabberVisible = true
+               sheet?.prefersScrollingExpandsWhenScrolledToEdge = true
+               modalSheet.modalPresentationStyle = .formSheet
+               modalSheet.modalTransitionStyle = .coverVertical
+//               modalSheet.view.backgroundColor = .white
+//               modalSheet.tableView.backgroundColor = .white
+//               modalSheet.tableView.layer.shadowRadius = 10
+//               modalSheet.tableView.layer.shadowOpacity = 0.5
+//               modalSheet.tableView.layer.shadowOffset = CGSize(width: 5, height: 7)
+//               modalSheet.preferredContentSize = .init(width: 100, height: 100)
+               
+               modalSheet.deleteButtonTapped = { [weak self] in
+                   guard let self = self else { return }
+                   deleteCell(at: indexPath, pdfDocument: pdfDocument)
+                   modalSheet.dismiss(animated: true)
+               }
+               
+               
+               modalSheet.thumbnailView.image = cell.thumbnailView.image
+               modalSheet.titleLabel.text = cell.titleLabel.text
+               modalSheet.descriptionLabel.text = cell.descriptionLabel.text
+               // Add content to the modal sheet
+//               let label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
+//               label.text = "This is a modal sheet"
+//               label.textAlignment = .center
+//               modalSheet.view.addSubview(label)
+               
+//               let deleteButton = UIButton(type: .system)
+//               deleteButton.setTitle("Delete document", for: .normal)
+//               deleteButton.addAction(UIAction(handler: { [self] ac in
+//                   o(at: indexPath, pdfDocument: pdfDocument)
+//               }), for: .touchUpInside)
+//               modalSheet.view.addSubview(deleteButton)
+               
+               // Position the delete button
+//               deleteButton.translatesAutoresizingMaskIntoConstraints = false
+//               NSLayoutConstraint.activate([
+//                   deleteButton.centerXAnchor.constraint(equalTo: modalSheet.view.centerXAnchor),
+//                   deleteButton.centerYAnchor.constraint(equalTo: modalSheet.view.centerYAnchor)
+//               ])
+
+               
+               // Present the modal sheet from the nearest view controller
+               if let viewController = cell.findViewController() {
+                   
+                   viewController.present(modalSheet, animated: true, completion: nil)
+               }
+           }
+       }
+    
+//    @objc func o(at: IndexPath, pdfDocument: PDFDocument) {
+//        deleteCell(at: at, pdfDocument: pdfDocument)
+//        modalSheet.dismiss(animated: true)
+//    }
     
     func makeDataSource() {
          dataSource = DataSource(collectionView: collectionView, cellProvider: { (collectionView, indexPath, document) -> DocumentCell? in
               let cell = collectionView.dequeueReusableCell(withReuseIdentifier:  "cellId", for: indexPath) as! DocumentCell
+//             cell.deleteTapHandler = { [weak self] in
+//                 self?.deleteCell(at: indexPath, pdfDocument: document)
+//             }
              
+             cell.showButtonTapped = { [weak self] in
+                 self?.presentModalSheetFromCell(at: indexPath, pdfDocument: document)
+                     }
              
 //             if let attributes = try? pdfURL.resourceValues(forKeys: [.fileSizeKey]) {
 //                 if let fileSize = attributes[.fileSizeKey] as? Int {
@@ -240,7 +363,7 @@ extension FilesVC {
         var snapshot = Snapshot()
           snapshot.appendSections([Section.main])
           snapshot.appendItems(self.documents)
-          dataSource.apply(snapshot, animatingDifferences: true)
+          dataSource.apply(snapshot, animatingDifferences: false)
     }
     
     @objc func notificationsButton() {
@@ -500,6 +623,7 @@ extension FilesVC: UIDocumentPickerDelegate, UISearchResultsUpdating {
                let newItem = doc
                newSnapshot.appendItems([newItem], toSection: .main)
                self.dataSource.apply(newSnapshot, animatingDifferences: true)
+               documents.append(newItem)
            } catch {
                print("Error saving PDF to document directory: \(error)")
            }
@@ -509,6 +633,19 @@ extension FilesVC: UIDocumentPickerDelegate, UISearchResultsUpdating {
 
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         dismiss(animated: true, completion: nil)
+    }
+}
+
+extension UIView {
+    func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let currentResponder = responder {
+            if let viewController = currentResponder as? UIViewController {
+                return viewController
+            }
+            responder = currentResponder.next
+        }
+        return nil
     }
 }
 

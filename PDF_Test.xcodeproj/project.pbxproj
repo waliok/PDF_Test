@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CA74D71C2AAF9AF4002ED743 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA74D71B2AAF9AF4002ED743 /* AccountViewController.swift */; };
+		CA74D71C2AAF9AF4002ED743 /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA74D71B2AAF9AF4002ED743 /* AccountVC.swift */; };
 		CA9F27092AAF85B200F1C34C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9F27082AAF85B200F1C34C /* AppDelegate.swift */; };
 		CA9F270B2AAF85B200F1C34C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9F270A2AAF85B200F1C34C /* SceneDelegate.swift */; };
 		CA9F270D2AAF85B200F1C34C /* FilesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9F270C2AAF85B200F1C34C /* FilesVC.swift */; };
@@ -27,11 +27,13 @@
 		CA9F27382AAF94D700F1C34C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA9F27372AAF94D700F1C34C /* GoogleService-Info.plist */; };
 		CAD035FA2AB108FE00C51AB7 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */; };
 		CAD035FC2AB1165C00C51AB7 /* Sample.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CAD035FB2AB1165C00C51AB7 /* Sample.pdf */; };
-		CAD035FE2AB1C88200C51AB7 /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD035FD2AB1C88200C51AB7 /* PDFViewer.swift */; };
+		CAD035FE2AB1C88200C51AB7 /* PDFViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD035FD2AB1C88200C51AB7 /* PDFViewerVC.swift */; };
+		CAD036002AB338E300C51AB7 /* ModalOptionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD035FF2AB338E200C51AB7 /* ModalOptionsVC.swift */; };
+		CAD036022AB3BC8400C51AB7 /* OptionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAD036012AB3BC8400C51AB7 /* OptionsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CA74D71B2AAF9AF4002ED743 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		CA74D71B2AAF9AF4002ED743 /* AccountVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		CA9F27052AAF85B200F1C34C /* PDF_Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDF_Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA9F27082AAF85B200F1C34C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CA9F270A2AAF85B200F1C34C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -46,7 +48,9 @@
 		CA9F27372AAF94D700F1C34C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCell.swift; sourceTree = "<group>"; };
 		CAD035FB2AB1165C00C51AB7 /* Sample.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Sample.pdf; sourceTree = "<group>"; };
-		CAD035FD2AB1C88200C51AB7 /* PDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewer.swift; sourceTree = "<group>"; };
+		CAD035FD2AB1C88200C51AB7 /* PDFViewerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewerVC.swift; sourceTree = "<group>"; };
+		CAD035FF2AB338E200C51AB7 /* ModalOptionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalOptionsVC.swift; sourceTree = "<group>"; };
+		CAD036012AB3BC8400C51AB7 /* OptionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,11 +83,13 @@
 		CA7E65A42AAFAF6F00CE9ACA /* MainViews */ = {
 			isa = PBXGroup;
 			children = (
-				CAD035FD2AB1C88200C51AB7 /* PDFViewer.swift */,
-				CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */,
-				CA9F270C2AAF85B200F1C34C /* FilesVC.swift */,
 				CA9F271C2AAF8A4F00F1C34C /* TabBar.swift */,
-				CA74D71B2AAF9AF4002ED743 /* AccountViewController.swift */,
+				CA9F270C2AAF85B200F1C34C /* FilesVC.swift */,
+				CA74D71B2AAF9AF4002ED743 /* AccountVC.swift */,
+				CAD035FD2AB1C88200C51AB7 /* PDFViewerVC.swift */,
+				CAD035FF2AB338E200C51AB7 /* ModalOptionsVC.swift */,
+				CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */,
+				CAD036012AB3BC8400C51AB7 /* OptionsCell.swift */,
 			);
 			path = MainViews;
 			sourceTree = "<group>";
@@ -207,13 +213,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAD035FE2AB1C88200C51AB7 /* PDFViewer.swift in Sources */,
+				CAD036002AB338E300C51AB7 /* ModalOptionsVC.swift in Sources */,
+				CAD035FE2AB1C88200C51AB7 /* PDFViewerVC.swift in Sources */,
 				CA9F27342AAF8FE200F1C34C /* PreviewExtension.swift in Sources */,
 				CA9F27322AAF8F0600F1C34C /* LoginViewController.swift in Sources */,
-				CA74D71C2AAF9AF4002ED743 /* AccountViewController.swift in Sources */,
+				CA74D71C2AAF9AF4002ED743 /* AccountVC.swift in Sources */,
 				CA9F270D2AAF85B200F1C34C /* FilesVC.swift in Sources */,
 				CA9F27092AAF85B200F1C34C /* AppDelegate.swift in Sources */,
 				CAD035FA2AB108FE00C51AB7 /* DocumentCell.swift in Sources */,
+				CAD036022AB3BC8400C51AB7 /* OptionsCell.swift in Sources */,
 				CA9F270B2AAF85B200F1C34C /* SceneDelegate.swift in Sources */,
 				CA9F27302AAF8E9900F1C34C /* AuthPickerViewController.swift in Sources */,
 				CA9F271D2AAF8A4F00F1C34C /* TabBar.swift in Sources */,

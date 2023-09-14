@@ -11,8 +11,7 @@ import SnapKit
 import SwiftUI
 
 class PDFViewController: UIViewController, PDFViewDelegate {
-
-//    let pdfURL: URL
+    
     let document: PDFDocument
     // Create a PDFView
     var pdfView: PDFView!
@@ -72,7 +71,8 @@ class PDFViewController: UIViewController, PDFViewDelegate {
         pdfView.delegate = self
         
         pdfView.autoScales = true
-        pdfView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+//        pdfView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         pdfView.maxScaleFactor = 2
         pdfView.minScaleFactor = 0.5
         pdfView.isUserInteractionEnabled = true
@@ -80,7 +80,7 @@ class PDFViewController: UIViewController, PDFViewDelegate {
         pdfView.displayDirection = .horizontal
 //        pdfView.usePageViewController(true)
         
-        pdfView.displayMode = .singlePage
+        pdfView.displayMode = .singlePageContinuous
         pdfView.usePageViewController(true, withViewOptions: nil)
         
         pdfView.translatesAutoresizingMaskIntoConstraints = false

@@ -10,6 +10,10 @@ import SnapKit
 
 class DocumentCell: UICollectionViewCell {
     
+    var showButtonTapped: (() -> Void)?
+    var deleteTapHandler: (() -> Void)?
+    var modalSheet = UIViewController()
+    
     private lazy var documentStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -24,11 +28,13 @@ class DocumentCell: UICollectionViewCell {
     
     private lazy var button: UIButton = {
         var button = UIButton()
-        UIImage.SymbolConfiguration(pointSize: 30, weight: .ultraLight, scale: .default)
-        UIImage.SymbolConfiguration(font: .systemFont(ofSize: 10, weight: .light), scale: .medium)
+//        UIImage.SymbolConfiguration(pointSize: 30, weight: .ultraLight, scale: .default)
+//        UIImage.SymbolConfiguration(font: .systemFont(ofSize: 10, weight: .light), scale: .medium)
 //        button.frame = CGRect(x: 100, y: 100, width: 20, height: 10)
         let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .ultraLight))
         let image = UIImage(systemName: "ellipsis", withConfiguration: config)
+        
+        button.addTarget(self, action: #selector(tap), for: .touchUpInside)
         
         button.tintColor = .black
         button.backgroundColor = .systemGray6
@@ -115,4 +121,47 @@ class DocumentCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc func tap() {
+//        deleteTapHandler?()
+        print("Tap button")
+       showButtonTapped?()
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+//    private func createModalSheet() -> UIViewController {
+////            let modalSheet = UIViewController()
+//            
+//
+//            // Create a button to delete the cell and its PDF file
+//            let deleteButton = UIButton(type: .system)
+//            deleteButton.setTitle("Delete Cell and PDF", for: .normal)
+//            deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+//            modalSheet.view.addSubview(deleteButton)
+//
+//            // Position the delete button
+//            deleteButton.translatesAutoresizingMaskIntoConstraints = false
+//            NSLayoutConstraint.activate([
+//                deleteButton.centerXAnchor.constraint(equalTo: modalSheet.view.centerXAnchor),
+//                deleteButton.centerYAnchor.constraint(equalTo: modalSheet.view.centerYAnchor)
+//            ])
+//
+//            return modalSheet
+//        }
+//    
+//    @objc private func deleteButtonTapped() {
+//            // Handle the delete action here
+//            // Remove data from the diffable data source
+//            // Delete the associated PDF file from the document directory
+////        deleteTapHandler?()
+////            // Dismiss the modal sheet
+////        modalSheet.dismiss(animated: true, completion: nil)
+//        }
 }

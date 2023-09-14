@@ -82,6 +82,14 @@ class AccountVC: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.view.backgroundColor = .white
         
+        if let user = Auth.auth().currentUser {
+            let displayName = user.displayName
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+            label.text = "Welcome, \(displayName ?? "User")"
+            navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: label)
+        }
+        
         self.view.addSubview(buttonStack)
         buttonStack.addArrangedSubview(rateAppButton)
         buttonStack.addArrangedSubview(shareAppButton)
@@ -91,7 +99,6 @@ class AccountVC: UIViewController {
             make.center.equalToSuperview()
         }
     }
-    
 }
 
 private extension AccountVC {
