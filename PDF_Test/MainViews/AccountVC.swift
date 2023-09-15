@@ -23,6 +23,7 @@ class AccountVC: UIViewController {
     }()
     
     private lazy var rateAppButton: UIButton = {
+        
         var configuration = UIButton.Configuration.bordered()
         configuration.title = "Rate App"
         configuration.cornerStyle = .medium
@@ -36,6 +37,7 @@ class AccountVC: UIViewController {
     }()
     
     private lazy var shareAppButton: UIButton = {
+        
         var configuration = UIButton.Configuration.bordered()
         configuration.title = "Share App"
         configuration.cornerStyle = .medium
@@ -49,6 +51,7 @@ class AccountVC: UIViewController {
     }()
     
     private lazy var deleteAccountButton: UIButton = {
+        
         var configuration = UIButton.Configuration.bordered()
         configuration.title = "Delete Account"
         configuration.cornerStyle = .medium
@@ -62,6 +65,7 @@ class AccountVC: UIViewController {
     }()
     
     private lazy var logOutButton: UIButton = {
+        
         var configuration = UIButton.Configuration.bordered()
         configuration.title = "Log Out"
         configuration.cornerStyle = .medium
@@ -78,23 +82,14 @@ class AccountVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Account"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.view.backgroundColor = .white
         
-        if let user = Auth.auth().currentUser {
-            let displayName = user.displayName
-            let label = UILabel()
-            label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-            label.text = "Welcome, \(displayName ?? "User")"
-            navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: label)
-        }
+        findUserName()
+        setUpVC()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        self.view.addSubview(buttonStack)
-        buttonStack.addArrangedSubview(rateAppButton)
-        buttonStack.addArrangedSubview(shareAppButton)
-        buttonStack.addArrangedSubview(deleteAccountButton)
-        buttonStack.addArrangedSubview(logOutButton)
         buttonStack.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
@@ -102,6 +97,27 @@ class AccountVC: UIViewController {
 }
 
 private extension AccountVC {
+    
+    func setUpVC() {
+        self.navigationItem.title = "Account"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.view.backgroundColor = .white
+        self.view.addSubview(buttonStack)
+        buttonStack.addArrangedSubview(rateAppButton)
+        buttonStack.addArrangedSubview(shareAppButton)
+        buttonStack.addArrangedSubview(deleteAccountButton)
+        buttonStack.addArrangedSubview(logOutButton)
+    }
+    
+    func findUserName() {
+        if let user = Auth.auth().currentUser {
+            let displayName = user.displayName
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+            label.text = "Welcome, \(displayName ?? "User")"
+            navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: label)
+        }
+    }
     
     @objc func rateButtonPressed() {
         if let scene = UIApplication
@@ -129,7 +145,7 @@ private extension AccountVC {
             if let error = error {
                 print("Unable to delete user; \(error.localizedDescription)")
             } else {
-            
+                
                 (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(UINavigationController(rootViewController: LoginViewController()))
             }
         }
@@ -154,7 +170,7 @@ private extension AccountVC {
 import SwiftUI
 
 @available(iOS 13, *)
-struct SettingsVC_Preview: PreviewProvider {
+struct AccountVC_Preview: PreviewProvider {
     
     static var previews: some View {
         

@@ -10,45 +10,67 @@ import PDFKit
 import SnapKit
 import SwiftUI
 
-class PDFViewController: UIViewController, PDFViewDelegate {
+class PDFViewController: UIViewController {
     
     let document: PDFDocument
-    // Create a PDFView
-    var pdfView: PDFView!
-    var thumbnailView = PDFThumbnailView()
     
-    private let pageLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black // Set the text color as desired
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    var pdfView: PDFView = {
+        
+        let pdfView = PDFView()
+        pdfView.isUserInteractionEnabled = true
+        pdfView.displaysPageBreaks = true
+        pdfView.displayDirection = .horizontal
+        pdfView.usePageViewController(true)
+        pdfView.displayMode = .singlePageContinuous
+        pdfView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return pdfView
     }()
+    
+    lazy var thumbnailView: PDFThumbnailView = {
+        
+        let thumbnailView = PDFThumbnailView()
+        thumbnailView.pdfView = pdfView
+        thumbnailView.thumbnailSize = CGSize(width: 50, height: 50)
+        thumbnailView.layoutMode = .horizontal
+        thumbnailView.backgroundColor = .systemBackground
+        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return thumbnailView
+    }()
+    
+    private lazy var pageLabel: UILabel = {
 
-    
-    private lazy var floatingButton: UIButton = {
-        var button = UIButton()
-        let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .medium))
-//        button.tintColor = .white
-        button.backgroundColor = .white
-//        let largeConfig = UIImage.SymbolConfiguration(pointSize: 60, weight: .bold, scale: .large)
-//
-//        let largeBoldDoc = UIImage(systemName: "doc.circle.fill", withConfiguration: largeConfig)
-        button.setImage(image, for: .normal)
-        button.layer.shadowRadius = 10
-        button.layer.shadowOpacity = 0.4
-        button.layer.cornerRadius = 35
-        button.layer.shadowOffset = CGSize(width: 3, height: 7)
+        let pageLabel = UILabel()
+        pageLabel.textAlignment = .center
+        pageLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        button.addTarget(self, action: #selector(pickPDF), for: .touchUpInside)
-        
-        return button
+        return pageLabel
     }()
+    
+    
+    private lazy var dismissFloatingButton: UIButton = {
+        
+        var dismissFloatingButton = UIButton()
+        let image = UIImage(systemName: "xmark.circle.fill",
+                            withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .medium))
+        dismissFloatingButton.backgroundColor = .white
+        dismissFloatingButton.setImage(image, for: .normal)
+        dismissFloatingButton.layer.cornerRadius = 35
+        dismissFloatingButton.layer.shadowRadius = 10
+        dismissFloatingButton.layer.shadowOpacity = 0.4
+        dismissFloatingButton.layer.shadowOffset = CGSize(width: 3, height: 7)
+        
+        dismissFloatingButton.addTarget(self, action: #selector(closeDocument), for: .touchUpInside)
+        
+        return dismissFloatingButton
+    }()
+    
+    //MARK: - Init HERE
     
     init(document: PDFDocument) {
-//        self.pdfURL = pdfURL
-//        self.pdfView = pdfView
         self.document = document
+        
         super .init(nibName: nil, bundle: nil)
     }
     
@@ -56,47 +78,18 @@ class PDFViewController: UIViewController, PDFViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - ViewDidLoad HERE
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
-
-        pdfView = PDFView()
-//        if let document = PDFDocument(url: pdfURL) {
-//            print(pdfURL)
-            pdfView.document = document
-//        }
-        
-        pdfView.delegate = self
-        
-        pdfView.autoScales = true
-//        pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
-//        pdfView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        pdfView.maxScaleFactor = 2
-        pdfView.minScaleFactor = 0.5
-        pdfView.isUserInteractionEnabled = true
-        pdfView.displaysPageBreaks = true
-        pdfView.displayDirection = .horizontal
-//        pdfView.usePageViewController(true)
-        
-        pdfView.displayMode = .singlePageContinuous
-        pdfView.usePageViewController(true, withViewOptions: nil)
-        
-        pdfView.translatesAutoresizingMaskIntoConstraints = false
-        
-        setThubnailView(pdfView)
-        
-        view.addSubview(pdfView)
-        
-        view.addSubview(floatingButton)
-        // Add pageLabel
-            view.addSubview(pageLabel)
-
-            // Set initial text for the label
+        setUpVC()
         handlePageChange()
+        
         NotificationCenter.default.addObserver (self, selector: #selector(handlePageChange), name: Notification.Name.PDFViewPageChanged, object: nil)
     }
+    
+    //MARK: - Setup constraints
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -105,7 +98,7 @@ class PDFViewController: UIViewController, PDFViewDelegate {
             make.edges.equalToSuperview()
         }
         
-        floatingButton.snp.makeConstraints { make in
+        dismissFloatingButton.snp.makeConstraints { make in
             make.top.equalTo(pdfView.snp.top).offset(50)
             make.leading.equalTo(pdfView.snp.trailing).offset(-50)
         }
@@ -118,61 +111,35 @@ class PDFViewController: UIViewController, PDFViewDelegate {
         }
         
         pageLabel.snp.makeConstraints { make in
-               // Position the label above the thumbnailView
-            make.bottom.equalTo(thumbnailView.snp.top).offset(-8) // Adjust the offset as needed
+            make.bottom.equalTo(thumbnailView.snp.top).offset(-8)
             make.centerX.equalTo(pdfView.snp.centerX)
-           }
+        }
+    }
+}
+
+extension PDFViewController: PDFViewDelegate {
+    
+    func setUpVC() {
+        
+        pdfView.document = document
+        pdfView.autoScales = true
+        pdfView.maxScaleFactor = 2
+        pdfView.minScaleFactor = 0.5
+        pdfView.delegate = self
+        pdfView.addSubview(thumbnailView)
+        
+        view.addSubview(pdfView)
+        view.addSubview(dismissFloatingButton)
+        view.addSubview(pageLabel)
     }
     
-    @objc func pickPDF() {
-        print("Hello")
+    @objc func closeDocument() {
         self.dismiss(animated: true)
     }
-
-    func setThubnailView(_ view: PDFView) {
-//        let thumbnailView = PDFThumbnailView()
-        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(thumbnailView)
-        thumbnailView.pdfView = pdfView
-        
-        
-//        thumbnailView.snp.makeConstraints { make in
-//               // Position the thumbnail view at the bottom of the PDFView or as needed
-//               make.leading.trailing.bottom.equalTo(pdfView).offset(-40)
-//            make.centerX.equalTo(pdfView)
-//               // Add other constraints for the thumbnail view as needed
-//           }
-      
-        
-        thumbnailView.thumbnailSize = CGSize(width: 50, height: 50)
-        thumbnailView.layoutMode = .horizontal
-        thumbnailView.backgroundColor = .systemBackground
-    }
     
-   @objc func handlePageChange() {
+    @objc func handlePageChange() {
         let currentPage = pdfView.currentPage?.pageRef?.pageNumber ?? 0
         let totalPages = pdfView.document?.pageCount ?? 0
         pageLabel.text = "\(currentPage)/\(totalPages)"
     }
-    
-//    // Implement PDFViewDelegate method to track page changes
-//    func pdfViewPageChanged(_ pdfView: PDFView) {
-//        updatePageInfo()
-//    }
-//
-//
-//    func pdfViewDidDocumentLoad(_ pdfView: PDFView) {
-//        // The PDF document is loaded; you can change the page here.
-//        print("_______________________________________________________________")
-//    }
-//
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//            // Calculate the current page based on the visible area of the PDF
-//            if let currentPage = pdfView.currentPage,
-//               let document = pdfView.document {
-//                let currentPageIndex = document.index(for: currentPage)
-//                print("Current Page: \(currentPageIndex + 1)") // Adding 1 because page numbers are 1-based
-//            }
-//        }
-    
 }

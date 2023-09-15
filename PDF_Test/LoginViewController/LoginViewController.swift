@@ -19,13 +19,13 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setUp()
+        setUpVC()
     }
 }
 
 extension LoginViewController {
     
-    func setUp() {
+    func setUpVC() {
         self.auth = Auth.auth()
         self.authUI = FUIAuth.defaultAuthUI()
         self.authUI?.delegate = self

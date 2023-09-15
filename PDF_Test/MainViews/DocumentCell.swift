@@ -11,8 +11,6 @@ import SnapKit
 class DocumentCell: UICollectionViewCell {
     
     var showButtonTapped: (() -> Void)?
-    var deleteTapHandler: (() -> Void)?
-    var modalSheet = UIViewController()
     
     private lazy var documentStack: UIStackView = {
         let stack = UIStackView()
@@ -27,10 +25,8 @@ class DocumentCell: UICollectionViewCell {
     }()
     
     private lazy var button: UIButton = {
+        
         var button = UIButton()
-//        UIImage.SymbolConfiguration(pointSize: 30, weight: .ultraLight, scale: .default)
-//        UIImage.SymbolConfiguration(font: .systemFont(ofSize: 10, weight: .light), scale: .medium)
-//        button.frame = CGRect(x: 100, y: 100, width: 20, height: 10)
         let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 15, weight: .ultraLight))
         let image = UIImage(systemName: "ellipsis", withConfiguration: config)
         
@@ -38,130 +34,84 @@ class DocumentCell: UICollectionViewCell {
         
         button.tintColor = .black
         button.backgroundColor = .systemGray6
-        
-//        let largeConfig = UIImage.SymbolConfiguration(pointSize: 60, weight: .bold, scale: .large)
-//
-//        let largeBoldDoc = UIImage(systemName: "doc.circle.fill", withConfiguration: largeConfig)
         button.setImage(image, for: .normal)
-//        button.layer.shadowRadius = 10
-//        button.layer.shadowOpacity = 0.4
         button.layer.cornerRadius = 5
-//        button.layer.shadowOffset = CGSize(width: 3, height: 7)
-        
-//        button.addTarget(self, action: #selector(pickPDF), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
 
-    var thumbnailView = UIImageView()
-    var titleLabel = UILabel()
-    var descriptionLabel = UILabel()
-//    private lazy var button: UIButton = {
-//        var button = UIButton()
-//        let image = UIImage(systemName: "ellipsis")
-//        button.tintColor = .secondaryLabel
-////        button.backgroundColor = UIColor(Color.accentColor)
-//        button.setImage(image, for: .normal)
-////        button.layer.shadowRadius = 10
-////        button.layer.shadowOpacity = 0.4
-////        button.layer.cornerRadius = 30
-////        button.layer.shadowOffset = CGSize(width: 3, height: 7)
-////
-////        button.addTarget(self, action: #selector(pickPDF), for: .touchUpInside)
-//
-//        return button
-//    }()
+    lazy var thumbnailView: UIImageView = {
+        
+        let thumbnailView = UIImageView()
+        thumbnailView.layer.shadowRadius = 2
+        thumbnailView.layer.shadowOpacity = 0.3
+        thumbnailView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        thumbnailView.contentMode = .scaleAspectFit
+        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return thumbnailView
+    }()
+    lazy var titleLabel: UILabel = {
+        
+        let titleLabel = UILabel()
+        titleLabel.font = .systemFont(ofSize: 14, weight: .light)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        return titleLabel
+    }()
     
-//    var url: NSURL?
+    lazy var descriptionLabel: UILabel = {
+        
+        let descriptionLabel = UILabel()
+        descriptionLabel.font = .systemFont(ofSize: 11)
+        descriptionLabel.textColor = .secondaryLabel
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        return descriptionLabel
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        thumbnailView.contentMode = .scaleAspectFit
-        thumbnailView.snp.makeConstraints { make in
-            make.height.equalTo(110)
-            make.width.equalTo(75)
-        }
-//        contentView.backgroundColor = .red
-//        contentView.backgroundColor = .red
-        self.contentView.addSubview(documentStack)
-        titleLabel.font = .systemFont(ofSize: 14, weight: .light)
-        descriptionLabel.font = .systemFont(ofSize: 11)
-        descriptionLabel.textColor = .secondaryLabel
-        
-//        descriptionLabel.snp.makeConstraints { make in
-////            make.leading.equalTo(documentStack)
-////            make.trailing.equalTo(documentStack)
-//            make.width.equalTo(documentStack)
-//        }
-        
-        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        thumbnailView.layer.shadowRadius = 2
-        thumbnailView.layer.shadowOpacity = 0.3
-//        thumbnailView.layer.cornerRadius = 35
-        thumbnailView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        
-        button.snp.makeConstraints { make in
-            make.height.equalTo(11)
-            make.width.equalTo(25)
-        }
-        documentStack.addArrangedSubview(thumbnailView)
-        documentStack.addArrangedSubview(titleLabel)
-        documentStack.addArrangedSubview(descriptionLabel)
-        documentStack.addArrangedSubview(button)
-        documentStack.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        setUpStack()
+        setUpConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+private extension DocumentCell {
     
-    @objc func tap() {
-//        deleteTapHandler?()
-        print("Tap button")
-       showButtonTapped?()
+    func setUpStack() {
         
+        documentStack.addArrangedSubview(thumbnailView)
+        documentStack.addArrangedSubview(titleLabel)
+        documentStack.addArrangedSubview(descriptionLabel)
+        documentStack.addArrangedSubview(button)
+        contentView.addSubview(documentStack)
     }
     
+    func setUpConstraints() {
+        
+        documentStack.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        thumbnailView.snp.makeConstraints { make in
+            make.height.equalTo(110)
+            make.width.equalTo(75)
+        }
+        
+        button.snp.makeConstraints { make in
+            make.height.equalTo(11)
+            make.width.equalTo(25)
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-//    private func createModalSheet() -> UIViewController {
-////            let modalSheet = UIViewController()
-//            
-//
-//            // Create a button to delete the cell and its PDF file
-//            let deleteButton = UIButton(type: .system)
-//            deleteButton.setTitle("Delete Cell and PDF", for: .normal)
-//            deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
-//            modalSheet.view.addSubview(deleteButton)
-//
-//            // Position the delete button
-//            deleteButton.translatesAutoresizingMaskIntoConstraints = false
-//            NSLayoutConstraint.activate([
-//                deleteButton.centerXAnchor.constraint(equalTo: modalSheet.view.centerXAnchor),
-//                deleteButton.centerYAnchor.constraint(equalTo: modalSheet.view.centerYAnchor)
-//            ])
-//
-//            return modalSheet
-//        }
-//    
-//    @objc private func deleteButtonTapped() {
-//            // Handle the delete action here
-//            // Remove data from the diffable data source
-//            // Delete the associated PDF file from the document directory
-////        deleteTapHandler?()
-////            // Dismiss the modal sheet
-////        modalSheet.dismiss(animated: true, completion: nil)
-//        }
+    @objc func tap() {
+       showButtonTapped?()
+    }
 }
