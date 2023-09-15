@@ -88,8 +88,7 @@
 				CA74D71B2AAF9AF4002ED743 /* AccountVC.swift */,
 				CAD035FD2AB1C88200C51AB7 /* PDFViewerVC.swift */,
 				CAD035FF2AB338E200C51AB7 /* ModalOptionsVC.swift */,
-				CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */,
-				CAD036012AB3BC8400C51AB7 /* OptionsCell.swift */,
+				CAD036052AB400E100C51AB7 /* Cells */,
 			);
 			path = MainViews;
 			sourceTree = "<group>";
@@ -125,6 +124,15 @@
 				CA9F27372AAF94D700F1C34C /* GoogleService-Info.plist */,
 			);
 			path = PDF_Test;
+			sourceTree = "<group>";
+		};
+		CAD036052AB400E100C51AB7 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				CAD035F92AB108FE00C51AB7 /* DocumentCell.swift */,
+				CAD036012AB3BC8400C51AB7 /* OptionsCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
