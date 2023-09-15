@@ -196,7 +196,6 @@ private extension FilesVC {
                             let dateFormatter = DateFormatter()
                             dateFormatter.dateFormat = "dd.MM.yyyy"
                             let formattedModificationDate = dateFormatter.string(from: modificationDate)
-                            print(formattedModificationDate)
                             labelText.append(formattedModificationDate)
                         }
                         
@@ -206,7 +205,6 @@ private extension FilesVC {
                             byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
                             byteCountFormatter.countStyle = .file
                             let size = byteCountFormatter.string(fromByteCount: fileSize)
-                            print(size)
                             labelText.append(" • \(size)")
                         }
                         cell.descriptionLabel.text = labelText
